@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>達Sir發聲計算機</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        .btn {
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0 0 currentColor !important;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .lang-btn {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-5 sm:p-7 rounded-[2rem] shadow-2xl w-full max-w-md border-4 border-green-200">
+        <div class="text-center mb-5">
+            <h1 class="text-2xl sm:text-3xl font-black text-green-600 tracking-wider">達Sir發聲計算機</h1>
+        </div>
+        <div id="screen" class="bg-green-50 rounded-2xl p-4 mb-6 shadow-inner border-2 border-green-100 cursor-pointer active:bg-green-100 transition-colors flex flex-col" onclick="speakDisplay()">
+            <div id="display-formula" class="text-gray-500 text-lg sm:text-xl min-h-[2.5rem] max-h-[5.5rem] overflow-y-auto no-scrollbar font-bold tracking-widest flex flex-wrap justify-end items-center content-end w-full"></div>
+            <div id="display-result" class="text-gray-800 text-3xl sm:text-4xl min-h-[4.5rem] max-h-[8.5rem] overflow-y-auto no-scrollbar font-black mt-2 tracking-wider transition-all duration-200 flex flex-wrap justify-end items-center content-end w-full">0</div>
+            <div class="text-xs text-green-400 text-right mt-2 font-bold animate-pulse w-full">💡 點擊螢幕發聲</div>
+        </div>
+        <div class="grid grid-cols-6 gap-2 sm:gap-3">
+            <button class="btn col-span-1 bg-red-100 text-red-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(254,202,202)] flex flex-col items-center justify-center border-2 border-red-200" onclick="pressKey('C')">
+                <span class="text-2xl sm:text-3xl font-black">C</span>
+            </button>
+            <button class="btn col-span-1 bg-yellow-100 text-yellow-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(254,240,138)] flex flex-col items-center justify-center border-2 border-yellow-200" onclick="pressKey('Backspace')">
+                <span class="text-2xl sm:text-3xl font-black">⌫</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('7')">
+                <span class="text-2xl sm:text-3xl font-black">7</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('8')">
+                <span class="text-2xl sm:text-3xl font-black">8</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('9')">
+                <span class="text-2xl sm:text-3xl font-black">9</span>
+            </button>
+            <button class="btn col-span-1 bg-purple-100 text-purple-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(233,213,255)] flex flex-col items-center justify-center border-2 border-purple-200" onclick="pressKey('÷')">
+                <span class="text-2xl sm:text-3xl font-black">÷</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey('(')">
+                <span class="text-2xl sm:text-3xl font-black">(</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey(')')">
+                <span class="text-2xl sm:text-3xl font-black">)</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('4')">
+                <span class="text-2xl sm:text-3xl font-black">4</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('5')">
+                <span class="text-2xl sm:text-3xl font-black">5</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('6')">
+                <span class="text-2xl sm:text-3xl font-black">6</span>
+            </button>
+            <button class="btn col-span-1 bg-purple-100 text-purple-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(233,213,255)] flex flex-col items-center justify-center border-2 border-purple-200" onclick="pressKey('×')">
+                <span class="text-2xl sm:text-3xl font-black">×</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey('[')">
+                <span class="text-2xl sm:text-3xl font-black">[</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey(']')">
+                <span class="text-2xl sm:text-3xl font-black">]</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('1')">
+                <span class="text-2xl sm:text-3xl font-black">1</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('2')">
+                <span class="text-2xl sm:text-3xl font-black">2</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('3')">
+                <span class="text-2xl sm:text-3xl font-black">3</span>
+            </button>
+            <button class="btn col-span-1 bg-purple-100 text-purple-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(233,213,255)] flex flex-col items-center justify-center border-2 border-purple-200" onclick="pressKey('-')">
+                <span class="text-2xl sm:text-3xl font-black">-</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey('{')">
+                <span class="text-2xl sm:text-3xl font-black">{</span>
+            </button>
+            <button class="btn col-span-1 bg-emerald-100 text-emerald-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(167,243,208)] flex flex-col items-center justify-center border-2 border-emerald-200" onclick="pressKey('}')">
+                <span class="text-2xl sm:text-3xl font-black">}</span>
+            </button>
+            <button class="btn col-span-1 bg-gray-100 text-gray-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(229,231,235)] flex flex-col items-center justify-center border-2 border-gray-200" onclick="pressKey('%')">
+                <span class="text-2xl sm:text-3xl font-black">%</span>
+            </button>
+            <button class="btn col-span-1 bg-blue-50 text-blue-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(191,219,254)] flex flex-col items-center justify-center border-2 border-blue-100" onclick="pressKey('0')">
+                <span class="text-2xl sm:text-3xl font-black">0</span>
+            </button>
+            <button class="btn col-span-1 bg-gray-100 text-gray-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(229,231,235)] flex flex-col items-center justify-center border-2 border-gray-200" onclick="pressKey('.')">
+                <span class="text-2xl sm:text-3xl font-black">.</span>
+            </button>
+            <button class="btn col-span-1 bg-purple-100 text-purple-600 rounded-xl p-2 shadow-[0_5px_0_0_rgb(233,213,255)] flex flex-col items-center justify-center border-2 border-purple-200" onclick="pressKey('+')">
+                <span class="text-2xl sm:text-3xl font-black">+</span>
+            </button>
+            <button id="lang-toggle-btn" class="btn lang-btn col-span-2 bg-teal-100 text-teal-700 rounded-xl p-2 shadow-[0_5px_0_0_rgb(94,186,169)] flex flex-col items-center justify-center border-2 border-teal-300 mt-2" onclick="toggleLanguage()">
+                <span id="lang-label" class="lang-label text-base sm:text-lg font-black leading-tight">廣東話</span>
+                <span class="text-[10px] sm:text-xs font-bold opacity-60 mt-0.5">🔊 切換</span>
+            </button>
+            <button class="btn col-span-1 bg-amber-100 text-amber-700 rounded-xl p-2 shadow-[0_5px_0_0_rgb(252,211,77)] flex flex-col items-center justify-center border-2 border-amber-300 mt-2" onclick="pressKey('又')">
+                <span class="text-xl sm:text-2xl font-black">又</span>
+            </button>
+            <button class="btn col-span-1 bg-amber-100 text-amber-700 rounded-xl p-2 shadow-[0_5px_0_0_rgb(252,211,77)] flex flex-col items-center justify-center border-2 border-amber-300 mt-2" onclick="pressKey('分之')">
+                <span class="text-sm sm:text-base font-black">分之</span>
+            </button>
+            <button class="btn col-span-2 bg-orange-400 text-white rounded-xl p-2 shadow-[0_5px_0_0_rgb(234,88,12)] flex flex-col items-center justify-center border-2 border-orange-500 mt-2" onclick="pressKey('=')">
+                <span class="text-3xl font-black">=</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        // --- 狀態管理 ---
+        var currentFormula = "";
+        var currentResult = "";
+        var isEvaluated = false;
+        // --- 語言切換 ---
+        var langList = ['yue', 'cmn', 'en'];
+        var langIndex = 0; // 預設廣東話
+        var langLabels = { 'yue': '廣東話', 'cmn': '普通話', 'en': 'ENG' };
+        var langColors = {
+            'yue': { bg: 'bg-teal-100', text: 'text-teal-700', shadow: 'shadow-[0_5px_0_0_rgb(94,186,169)]', border: 'border-teal-300' },
+            'cmn': { bg: 'bg-rose-100', text: 'text-rose-700', shadow: 'shadow-[0_5px_0_0_rgb(225,138,138)]', border: 'border-rose-300' },
+            'en': { bg: 'bg-sky-100', text: 'text-sky-700', shadow: 'shadow-[0_5px_0_0_rgb(125,182,225)]', border: 'border-sky-300' }
+        };
+        // --- 三語發聲字典 ---
+        var speechMaps = {
+            'yue': {
+                'C': '清空', 'Backspace': '後退',
+                '(': '開括號', ')': '閂括號',
+                '[': '開中括號', ']': '閂中括號',
+                '{': '開大括號', '}': '閂大括號',
+                '+': '加', '-': '減', '×': '乘以', '÷': '除以',
+                '=': '等於', '.': '點', '%': 'percent', '...': '餘',
+                '又': '又', '分之': '分之'
+            },
+            'cmn': {
+                'C': '清空', 'Backspace': '退格',
+                '(': '左括号', ')': '右括号',
+                '[': '左中括号', ']': '右中括号',
+                '{': '左大括号', '}': '右大括号',
+                '+': '加', '-': '减', '×': '乘以', '÷': '除以',
+                '=': '等于', '.': '点', '%': 'percent', '...': '余',
+                '又': '又', '分之': '分之'
+            },
+            'en': {
+                'C': 'clear', 'Backspace': 'backspace',
+                '(': 'open bracket', ')': 'close bracket',
+                '[': 'open square bracket', ']': 'close square bracket',
+                '{': 'open curly bracket', '}': 'close curly bracket',
+                '+': 'plus', '-': 'minus', '×': 'times', '÷': 'divided by',
+                '=': 'equals', '.': 'point', '%': 'percent', '...': 'remainder',
+                '又': ' and ', '分之': ' over '
+            }
+        };
+        function getCurrentLang() {
+            return langList[langIndex];
+        }
+        function toggleLanguage() {
+            langIndex = (langIndex + 1) % langList.length;
+            var lang = getCurrentLang();
+            var btn = document.getElementById('lang-toggle-btn');
+            var label = document.getElementById('lang-label');
+            
+            // 即時切換，移除延遲
+            label.textContent = langLabels[lang];
+            
+            // 更新按鈕配色
+            var colors = langColors[lang];
+            btn.className = 'btn lang-btn col-span-2 rounded-xl p-2 flex flex-col items-center justify-center border-2 mt-2 '
+                + colors.bg + ' ' + colors.text + ' ' + colors.shadow + ' ' + colors.border;
+            
+            // 語音回饋
+            var confirmTexts = { 'yue': '廣東話', 'cmn': '普通话', 'en': 'English' };
+            speak(confirmTexts[lang]);
+        }
+        // --- 文字轉語音 (TTS) 功能 ---
+        var synth = window.speechSynthesis;
+        function speak(text) {
+            if (!synth) return;
+            synth.cancel();
+            var utterance = new SpeechSynthesisUtterance(text);
+            var lang = getCurrentLang();
+            // 設定語言代碼
+            if (lang === 'yue') utterance.lang = 'zh-HK';
+            else if (lang === 'cmn') utterance.lang = 'zh-CN';
+            else utterance.lang = 'en-US';
+            // 嘗試找到匹配的語音
+            var voices = synth.getVoices();
+            var selectedVoice = null;
+            if (lang === 'yue') {
+                selectedVoice = voices.find(function(v) { return v.lang === 'zh-HK' || v.lang === 'yue-Hant-HK' || v.name.includes('Cantonese'); });
+                if (!selectedVoice) selectedVoice = voices.find(function(v) { return v.lang.includes('zh'); });
+            } else if (lang === 'cmn') {
+                selectedVoice = voices.find(function(v) { return v.lang === 'zh-CN' || v.lang === 'cmn-Hans-CN' || v.name.includes('Mandarin'); });
+                if (!selectedVoice) selectedVoice = voices.find(function(v) { return v.lang.includes('zh'); });
+            } else {
+                selectedVoice = voices.find(function(v) { return v.lang === 'en-US' || v.lang === 'en-GB'; });
+                if (!selectedVoice) selectedVoice = voices.find(function(v) { return v.lang.includes('en'); });
+            }
+            if (selectedVoice) utterance.voice = selectedVoice;
+            // 發聲速度保持不變
+            utterance.rate = (lang === 'en') ? 0.55 : 0.45;
+            synth.speak(utterance);
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = function() { synth.getVoices(); };
+        }
+        // --- 將算式轉換為語音文字 ---
+        function formulaToSpeech(text) {
+            var lang = getCurrentLang();
+            if (lang === 'yue') {
+                text = text.replace(/(^|[=\(\[\{×÷\+\-])-/g, '$1負')
+                           .replace(/÷/g, '除以').replace(/×/g, '乘以').replace(/\+/g, '加').replace(/-/g, '減')
+                           .replace(/=/g, '等於').replace(/\.\.\./g, '餘').replace(/\[/g, '開中括號')
+                           .replace(/\]/g, '閂中括號').replace(/\{/g, '開大括號').replace(/\}/g, '閂大括號')
+                           .replace(/\(/g, '開括號').replace(/\)/g, '閂括號').replace(/%/g, 'percent');
+            } else if (lang === 'cmn') {
+                text = text.replace(/(^|[=\(\[\{×÷\+\-])-/g, '$1负')
+                           .replace(/÷/g, '除以').replace(/×/g, '乘以').replace(/\+/g, '加').replace(/-/g, '减')
+                           .replace(/=/g, '等于').replace(/\.\.\./g, '余').replace(/\[/g, '左中括号')
+                           .replace(/\]/g, '右中括号').replace(/\{/g, '左大括号').replace(/\}/g, '右大括号')
+                           .replace(/\(/g, '左括号').replace(/\)/g, '右括号').replace(/%/g, 'percent');
+            } else {
+                text = text.replace(/(\d+)又(\d+)分之(\d+)/g, '$1 and $3 over $2')
+                           .replace(/(\d+)分之(\d+)/g, '$2 over $1')
+                           .replace(/(^|[=\(\[\{×÷\+\-])-/g, '$1 negative ')
+                           .replace(/÷/g, ' divided by ').replace(/×/g, ' times ').replace(/\+/g, ' plus ')
+                           .replace(/-/g, ' minus ').replace(/=/g, ' equals ').replace(/\.\.\./g, ' remainder ')
+                           .replace(/\[/g, ' open square bracket ').replace(/\]/g, ' close square bracket ')
+                           .replace(/\{/g, ' open curly bracket ').replace(/\}/g, ' close curly bracket ')
+                           .replace(/\(/g, ' open bracket ').replace(/\)/g, ' close bracket ')
+                           .replace(/%/g, ' percent ')
+                           .replace(/ 或 /g, ' or ');
+            }
+            return text;
+        }
+        // --- HTML 分數視覺渲染引擎 ---
+        function formatFractionHTML(str) {
+            if (!str) return "";
+            // 將 A又B分之C 或 B分之C 轉化為直式分數的 HTML
+            let htmlStr = str.replace(/(\d+)又(\d+)分之(\d+)/g, function(match, whole, den, num) {
+                return `<span class="inline-flex items-center align-middle mx-1 whitespace-nowrap">
+                            <span class="text-[1.2em] font-black">${whole}</span>
+                            <span class="flex flex-col items-center justify-center px-1 text-[0.8em] leading-none">
+                                <span class="border-b-[0.12em] border-current w-full text-center pb-[0.1em]">${num}</span>
+                                <span class="pt-[0.1em]">${den}</span>
+                            </span>
+                        </span>`;
+            });
+            htmlStr = htmlStr.replace(/(\d+)分之(\d+)/g, function(match, den, num) {
+                return `<span class="inline-flex items-center align-middle mx-1 whitespace-nowrap">
+                            <span class="flex flex-col items-center justify-center px-1 text-[0.8em] leading-none">
+                                <span class="border-b-[0.12em] border-current w-full text-center pb-[0.1em]">${num}</span>
+                                <span class="pt-[0.1em]">${den}</span>
+                            </span>
+                        </span>`;
+            });
+            return htmlStr;
+        }
+        // --- 點擊按鍵邏輯 ---
+        function pressKey(key) {
+            var lang = getCurrentLang();
+            var map = speechMaps[lang];
+            var speakText = map[key] || key;
+            if (key !== '=') speak(speakText);
+            if (key === 'C') {
+                currentFormula = "";
+                currentResult = "";
+                isEvaluated = false;
+            } else if (key === 'Backspace') {
+                if (isEvaluated) {
+                    currentFormula = "";
+                    currentResult = "";
+                    isEvaluated = false;
+                } else {
+                    if (currentFormula.endsWith('分之')) {
+                        currentFormula = currentFormula.slice(0, -2);
+                    } else {
+                        currentFormula = currentFormula.slice(0, -1);
+                    }
+                }
+            } else if (key === '=') {
+                if (!currentFormula) return;
+                var calcAns = calculate(currentFormula);
+                currentResult = calcAns;
+                isEvaluated = true;
+                var sentence = currentFormula + "=" + currentResult;
+                sentence = formulaToSpeech(sentence);
+                speak(sentence);
+            } else {
+                if (isEvaluated) {
+                    var operators = ['+', '-', '×', '÷', '%'];
+                    if (operators.includes(key)) {
+                        let cleanResult = currentResult;
+                        // 若答案帶有「或」(例如 1又5分之1 或 5分之6)，抽取第一項進行連續運算
+                        if (cleanResult.includes(" 或 ")) {
+                            cleanResult = cleanResult.split(" 或 ")[0];
+                        }
+                        if (!cleanResult.includes('...') && cleanResult !== "錯誤") {
+                            currentFormula = cleanResult + key;
+                        } else {
+                            currentFormula = key;
+                        }
+                    } else {
+                        currentFormula = key;
+                    }
+                    currentResult = "";
+                    isEvaluated = false;
+                } else {
+                    currentFormula += key;
+                }
+            }
+            updateDisplay();
+        }
+        function updateDisplay() {
+            var formulaDiv = document.getElementById('display-formula');
+            var resultDiv = document.getElementById('display-result');
+         
+            formulaDiv.innerHTML = formatFractionHTML(currentFormula) || "";
+         
+            var resultText = "";
+            if (isEvaluated) {
+                resultText = "= " + currentResult;
+            } else {
+                resultText = currentFormula ? "" : "0";
+            }
+            resultDiv.innerHTML = formatFractionHTML(resultText);
+            
+            var plainTextLen = resultText.replace(/<[^>]*>?/gm, '').length;
+            if (plainTextLen > 25) {
+                resultDiv.className = "text-gray-800 text-xl min-h-[4.5rem] max-h-[8.5rem] overflow-y-auto break-words no-scrollbar font-black mt-2 tracking-wider transition-all duration-200 flex flex-wrap justify-end items-center content-end w-full";
+            } else if (plainTextLen > 15) {
+                resultDiv.className = "text-gray-800 text-xl sm:text-2xl min-h-[4.5rem] max-h-[8.5rem] overflow-y-auto break-words no-scrollbar font-black mt-2 tracking-wider transition-all duration-200 flex flex-wrap justify-end items-center content-end w-full";
+            } else if (plainTextLen > 9) {
+                resultDiv.className = "text-gray-800 text-2xl sm:text-3xl min-h-[4.5rem] max-h-[8.5rem] overflow-y-auto break-words no-scrollbar font-black mt-2 tracking-wider transition-all duration-200 flex flex-wrap justify-end items-center content-end w-full";
+            } else {
+                resultDiv.className = "text-gray-800 text-3xl sm:text-4xl min-h-[4.5rem] max-h-[8.5rem] overflow-y-auto break-words no-scrollbar font-black mt-2 tracking-wider transition-all duration-200 flex flex-wrap justify-end items-center content-end w-full";
+            }
+            formulaDiv.scrollTop = formulaDiv.scrollHeight;
+            resultDiv.scrollTop = resultDiv.scrollHeight;
+        }
+        function speakDisplay() {
+            var lang = getCurrentLang();
+            if (!currentFormula && !currentResult) {
+                var zeroTexts = { 'yue': '顯示屏為零', 'cmn': '显示为零', 'en': 'Display is zero' };
+                speak(zeroTexts[lang]);
+                return;
+            }
+            var textToSpeak = currentFormula;
+            if (isEvaluated && currentResult) {
+                textToSpeak += "=" + currentResult;
+            }
+            textToSpeak = formulaToSpeech(textToSpeak);
+            speak(textToSpeak);
+        }
+        // --- 最大公因數 (GCD) 用於約簡最簡分數 ---
+        function gcd(a, b) {
+            a = Math.abs(a); b = Math.abs(b);
+            while (b) { var t = b; b = a % b; a = t; }
+            return a;
+        }
+        // --- 分數運算核心引擎 ---
+        class Frac {
+            constructor(n, d) {
+                if (d === undefined) d = 1;
+                if (d === 0) throw new Error("除以零");
+                this.n = n;
+                this.d = d;
+                if (this.d < 0) { this.n *= -1; this.d *= -1; }
+                this.simplify();
+            }
+            // 自動化約簡為最簡分數
+            simplify() {
+                let g = gcd(this.n, this.d);
+                if (g > 1) {
+                    this.n /= g;
+                    this.d /= g;
+                }
+                return this;
+            }
+            add(b) { return new Frac(this.n * b.d + b.n * this.d, this.d * b.d); }
+            sub(b) { return new Frac(this.n * b.d - b.n * this.d, this.d * b.d); }
+            mul(b) { return new Frac(this.n * b.n, this.d * b.d); }
+            div(b) { return new Frac(this.n * b.d, this.d * b.n); }
+        }
+        function tokenize(str) {
+            str = str.replace(/\[/g, '(').replace(/\]/g, ')')
+                     .replace(/\{/g, '(').replace(/\}/g, ')')
+                     .replace(/×/g, '*').replace(/÷/g, '/')
+                     .replace(/\s+/g, '');
+            var tokens = [];
+            for (var i = 0; i < str.length; i++) {
+                var char = str[i];
+                var remaining = str.substring(i);
+             
+                var mixedMatch = remaining.match(/^(\d+)又(\d+)分之(\d+)/);
+                if (mixedMatch) {
+                    tokens.push(mixedMatch[0]);
+                    i += mixedMatch[0].length - 1;
+                    continue;
+                }
+                var fracMatch = remaining.match(/^(\d+)分之(\d+)/);
+                if (fracMatch) {
+                    tokens.push(fracMatch[0]);
+                    i += fracMatch[0].length - 1;
+                    continue;
+                }
+                var numMatch = remaining.match(/^(\d+(\.\d+)?)/);
+                if (numMatch) {
+                    tokens.push(numMatch[0]);
+                    i += numMatch[0].length - 1;
+                    continue;
+                }
+                if (char === '%') {
+                    tokens.push('/');
+                    tokens.push('100');
+                } else if (char === '-' && (tokens.length === 0 || ['+', '-', '*', '/', '('].includes(tokens[tokens.length-1]))) {
+                    var negRemaining = str.substring(i+1);
+                    var nMixed = negRemaining.match(/^(\d+)又(\d+)分之(\d+)/);
+                    if (nMixed) { tokens.push('-' + nMixed[0]); i += nMixed[0].length; continue; }
+                 
+                    var nFrac = negRemaining.match(/^(\d+)分之(\d+)/);
+                    if (nFrac) { tokens.push('-' + nFrac[0]); i += nFrac[0].length; continue; }
+                 
+                    var nNum = negRemaining.match(/^(\d+(\.\d+)?)/);
+                    if (nNum) { tokens.push('-' + nNum[0]); i += nNum[0].length; continue; }
+                 
+                    tokens.push(char);
+                } else {
+                    tokens.push(char);
+                }
+            }
+            return tokens;
+        }
+        function toPostfix(tokens) {
+            var output = [];
+            var ops = [];
+            var precedence = {'+':1, '-':1, '*':2, '/':2};
+            for (var idx = 0; idx < tokens.length; idx++) {
+                var t = tokens[idx];
+                if (/^[-]?\d/.test(t) || t.includes('分之')) {
+                    output.push(t);
+                } else if (t === '(') {
+                    ops.push(t);
+                } else if (t === ')') {
+                    while (ops.length && ops[ops.length-1] !== '(') output.push(ops.pop());
+                    if(ops.length) ops.pop();
+                } else if (precedence[t]) {
+                    while (ops.length && precedence[ops[ops.length-1]] >= precedence[t]) output.push(ops.pop());
+                    ops.push(t);
+                }
+            }
+            while (ops.length) output.push(ops.pop());
+            return output;
+        }
+        function evaluatePostfix(postfix) {
+            var stack = [];
+            for (var idx = 0; idx < postfix.length; idx++) {
+                var t = postfix[idx];
+             
+                if (typeof t === 'string' && (t.includes('又') || t.includes('分之'))) {
+                    let isNegative = t.startsWith('-');
+                    let pureT = isNegative ? t.substring(1) : t;
+                    let val;
+                    if (pureT.includes('又')) {
+                        let parts = pureT.match(/(\d+)又(\d+)分之(\d+)/);
+                        val = new Frac(parseInt(parts[1]) * parseInt(parts[2]) + parseInt(parts[3]), parseInt(parts[2]));
+                    } else {
+                        let parts = pureT.match(/(\d+)分之(\d+)/);
+                        val = new Frac(parseInt(parts[2]), parseInt(parts[1]));
+                    }
+                    if (isNegative) val.n = -val.n;
+                    stack.push(val);
+                }
+                else if (/^[-]?\d/.test(t)) {
+                    var parts = t.split('.');
+                    if (parts.length === 2) {
+                        var dec = parts[1].length;
+                        stack.push(new Frac(parseInt(t.replace('.','')), Math.pow(10, dec)));
+                    } else {
+                        stack.push(new Frac(parseInt(t), 1));
+                    }
+                } else {
+                    var b = stack.pop();
+                    var a = stack.pop();
+                    if (!a || !b) throw new Error("語法錯誤");
+                    if (t === '+') stack.push(a.add(b));
+                    else if (t === '-') stack.push(a.sub(b));
+                    else if (t === '*') stack.push(a.mul(b));
+                    else if (t === '/') stack.push(a.div(b));
+                }
+            }
+            if(stack.length !== 1) throw new Error("語法錯誤");
+            return stack[0];
+        }
+
+        // --- 識別公式最開首輸入的運算元類型 ---
+        function getFirstInputType(formula) {
+            let clean = formula.replace(/^[\(\[\{\s\-]+/, '');
+            
+            if (/^\d+(\.\d+)?%/.test(clean)) return 'percent';
+            if (/^\d+又\d+分之\d+/.test(clean) || /^\d+分之\d+/.test(clean)) return 'fraction';
+            if (/^\d+\.\d+/.test(clean)) return 'decimal';
+            if (/^\d+/.test(clean)) return 'integer';
+            return 'default';
+        }
+
+        // --- 格式化分數結果為最簡分數 ---
+        function formatFracResult(frac) {
+            frac.simplify(); // 確保已化至最簡
+            if (frac.n % frac.d === 0) {
+                return (frac.n / frac.d).toString();
+            }
+            let sign = (frac.n < 0) ? "-" : "";
+            let num = Math.abs(frac.n);
+            let den = Math.abs(frac.d);
+
+            if (num > den) { // 假分數 -> 顯示最簡帶分數 或 最簡假分數
+                let whole = Math.floor(num / den);
+                let rem = num % den;
+                return sign + whole + "又" + den + "分之" + rem + " 或 " + sign + den + "分之" + num;
+            } else { // 真分數 -> 最簡真分數
+                return sign + den + "分之" + num;
+            }
+        }
+
+        function calculate(expressionStr) {
+            try {
+                if (!expressionStr) return "";
+                var hasDecimals = expressionStr.includes('.') || expressionStr.includes('%');
+                var hasFraction = expressionStr.includes('又') || expressionStr.includes('分之');
+             
+                var tokens = tokenize(expressionStr);
+                if (tokens.length === 0) return "";
+                var postfix = toPostfix(tokens);
+                var resultFrac = evaluatePostfix(postfix);
+
+                var firstType = getFirstInputType(expressionStr);
+
+                // 1. 若開首是「百分比」
+                if (firstType === 'percent') {
+                    let pctVal = (resultFrac.n / resultFrac.d) * 100;
+                    return parseFloat(pctVal.toFixed(5)).toString() + "%";
+                }
+
+                // 2. 若開首是「小數」
+                if (firstType === 'decimal') {
+                    return parseFloat((resultFrac.n / resultFrac.d).toFixed(5)).toString();
+                }
+
+                // 3. 若開首是「分數」：輸出最簡分數 (例如 14/4 -> 3又2分之1 或 2分之7)
+                if (firstType === 'fraction') {
+                    return formatFracResult(resultFrac);
+                }
+
+                // 4. 若開首是「整數」或預設
+                if (resultFrac.n % resultFrac.d === 0) {
+                    return (resultFrac.n / resultFrac.d).toString();
+                } else {
+                    if (hasFraction) {
+                        return formatFracResult(resultFrac);
+                    } else if (hasDecimals) {
+                        return parseFloat((resultFrac.n / resultFrac.d).toFixed(5)).toString();
+                    } else {
+                        // 傳統整數商餘計算
+                        var quotient, remainder;
+                        if (resultFrac.n < 0 && resultFrac.d > 0) quotient = Math.ceil(resultFrac.n / resultFrac.d);
+                        else quotient = Math.floor(resultFrac.n / resultFrac.d);
+                        remainder = resultFrac.n - quotient * resultFrac.d;
+                        return quotient + "..." + remainder;
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                return "錯誤";
+            }
+        }
+    </script>
+</body>
+</html>
